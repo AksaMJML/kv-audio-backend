@@ -32,10 +32,6 @@ const userSchema = new mongoose.Schema(
         phoneNumber : {
             type : String,
             required : true
-        },
-        nickname : {
-            type : String,
-            required : true
         }
     }
 );
