@@ -20,3 +20,19 @@ export function registerUser(req,res){
     }
     )
 };
+
+export function loginUser(req,res){
+
+    const data = req.body;
+
+    User.findOne({
+        email : data.email   
+    }).then(
+        (user)=>{
+            res.json({
+                user : user
+            })
+        }
+    )
+
+}
