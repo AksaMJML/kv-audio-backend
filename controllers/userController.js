@@ -9,9 +9,9 @@ export function registerUser(req,res){
         res.json ({
             message : "user added successfully"
         })
-        .catch((error)=>{
+    }).catch((error)=>{
             res.status(500).json({error : "user registration failed"})
-        })
+        
     }
     )
 };
