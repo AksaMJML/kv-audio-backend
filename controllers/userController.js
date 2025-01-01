@@ -34,9 +34,18 @@ export function loginUser(req,res){
                     error : "user not found"
                 });
             }else{
-                res.json({
-                    message : "user found" , user : user
-                });
+                const isPasswordCorrect = bcrypt.compareSync(data.password, user.password);
+
+                if(isPasswordCorrect)
+                {
+                    res.json({
+                        message : "login successfull"
+                    })
+                }else{
+                    res.status(404).json({
+                    message : "login failed"
+                })
+                }
             }
         }
     )
