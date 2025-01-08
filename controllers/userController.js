@@ -45,7 +45,7 @@ export function loginUser(req,res){
                     })
                 }else{
                     res.status(404).json({
-                    message : "login failed"
+                    error : "login failed"
                 })
                 }
             }
