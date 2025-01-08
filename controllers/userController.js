@@ -34,9 +34,14 @@ export function loginUser(req,res){
 
                 if(isPasswordCorrect)
                 {
-                    const token = jwt.sign({})
+                    const token = jwt.sign({
+                        firstName : user.firstName,
+                        lastName : user.lastName,
+                        email : user.email,
+                        role : user.role
+                    },"kv-secretkey-99!")
                     res.json({
-                        message : "login successfull"
+                        message : "login successfull" , token : token
                     })
                 }else{
                     res.status(404).json({
