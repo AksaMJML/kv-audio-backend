@@ -5,6 +5,7 @@ import userRouter from "./routes/userRouter.js";
 
 
 let app = express();
+app.use(express.json());
 
 app.use(bodyParser.json());
 
