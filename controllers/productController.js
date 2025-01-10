@@ -1,4 +1,4 @@
-import Product from "../models/products";
+import Product from "../models/products.js";
 
 export function addProduct(req,res){
     const data = req.body;
