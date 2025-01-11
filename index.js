@@ -3,15 +3,29 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import userRouter from "./routes/userRouter.js";
 import productRouter from "./routes/productRouter.js";
+import jwt from "jsonwebtoken";
 
 
 const app = express();
 app.use(express.json());
 
 app.use(bodyParser.json());
+
 app.use((req,res,next)=>{
-    console.log("request is here")
-    next();
+    let token = req.header
+    ("Authorization")
+
+    if(token != null){
+        token = token.replace("Bearer ", "")
+        jwt.verify(token, "kv-secret-89!",
+            (err,decoded)=>{
+                if(!err){
+                    console.log(decoded);               
+                }
+            }
+        )
+    }
+        console.log(token)
 })
 
 let mongoUrl = "mongodb+srv://admin:123@cluster0.mmas6.mongodb.net/prods?retryWrites=true&w=majority&appName=Cluster0"
