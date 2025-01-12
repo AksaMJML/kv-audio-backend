@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
     {
-        key : {
-            type : String,
-            required : true,
-            unique : true
-        },
+        // key : {
+        //     type : String,
+        //     required : true,
+        //     unique : true
+        // },
         name : {
             type : String,
             required : true
@@ -15,22 +15,23 @@ const productSchema = new mongoose.Schema(
             type : Number,
             required : true
         },
-        category : {
-            type : String,
-            require : true,
-            default : "uncatogorized"
-        },
-        dimensions : {
-            type : String,
-            required : true
-        },
+        // category : {
+        //     type : String,
+        //     require : true,
+        //     default : "uncatogorized"
+        // },
+        // dimensions : {
+        //     type : String,
+        //     required : true
+        // }
         description : {
             type : String,
             required : true
-        },
-        availability : {
-            
         }
+        // ,
+        // availability : {
+            
+        // }
     }
 );
 

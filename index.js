@@ -20,13 +20,13 @@ app.use((req,res,next)=>{
         jwt.verify(token, "kv-secret-89!",
             (err,decoded)=>{
                 if(!err){
-                    console.log(decoded);               
+                    req.user = decoded;           
                 }
             }
-        )
+        );
     }
-        console.log(token)
-})
+        next();
+});
 
 let mongoUrl = "mongodb+srv://admin:123@cluster0.mmas6.mongodb.net/prods?retryWrites=true&w=majority&appName=Cluster0"
 
