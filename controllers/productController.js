@@ -11,6 +11,13 @@ if(req.user == null){
     return;
 }
 
+    if(req.user.role != "admin"){
+        res.status(403).json({
+            message : "You are not authorized to perform this action"
+        })
+        return
+    }
+
     const data = req.body;
     const newProduct = new Product(data);
     newProduct.save().then(()=>{
