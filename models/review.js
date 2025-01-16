@@ -25,6 +25,11 @@ const reviewSchema = new mongoose.Schema(
             required: true,
             min: 1, max: 5 
         },
+        isApproved : {
+            type : Boolean,
+            required : true,
+            default : false
+        },
         images: [String]
     }
 )
