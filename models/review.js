@@ -4,21 +4,21 @@ const reviewSchema = new mongoose.Schema(
     {
         email : {
             type : String,
-            required : true,
+            required : false,
             unique : true
         },
         name : {
             type : String,
-            required : true
+            required : false
         },
         description : {
             type : String,
             required : true
         },
         date : {
-            type : date,
+            type : Date,
             required :true,
-            default : date.now()
+            default : Date.now()
         },
         rating: {
             type: Number,
