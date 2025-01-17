@@ -30,7 +30,11 @@ const reviewSchema = new mongoose.Schema(
             required : true,
             default : false
         },
-        images: [String]
+        profilePicture : {
+            type : String,
+            required : true,
+            default : "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
+        }
     }
 )
 

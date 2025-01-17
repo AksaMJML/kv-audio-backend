@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema(
         phoneNumber : {
             type : String,
             required : true
+        },
+        profilePicture : {
+            type : String,
+            required : true,
+            default : "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
         }
     }
 );
