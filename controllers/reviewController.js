@@ -28,6 +28,17 @@ export function addReview(req,res){
     })
 }
 
+export function getReviews(req,res){
+
+    const user = req.user;
+
+    if(user == null || user.role != "admin"){
+        Review.find({isApproved : true }).then((reviews)=>{
+            res.json(reviews);
+        })
+    }
+}
+
 // "email": "user@domain.com",
 //     "password": "password123", customer
 
