@@ -46,6 +46,19 @@ export function getReviews(req,res){
     }
 }
 
+export function deleteReview(req,res){
+    const email = req.params.email;
+    Review.deleteOne({email:email}).then(()=>{
+        res.json({
+            message : "review deleted successfully"
+        });
+    }).catch((error)=>{
+        res.error(404).json({
+            message : "reviewdeletion failed"
+        });
+    });
+}
+
 // "email": "user@domain.com",
 //     "password": "password123", customer
 
