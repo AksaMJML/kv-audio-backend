@@ -46,18 +46,45 @@ export function getReviews(req,res){
     }
 }
 
-export function deleteReview(req,res){
+// export function deleteReview(req,res){
+//     const email = req.params.email;
+//     Review.deleteOne({email:email}).then(()=>{
+//         res.json({
+//             message : "review deleted successfully"
+//         });
+//     }).catch((error)=>{
+//         res.error(404).json({
+//             message : "reviewdeletion failed"
+//         });
+//     });
+// }
+
+export function deleteReview(req, res) {
     const email = req.params.email;
-    Review.deleteOne({email:email}).then(()=>{
+  
+    Review.deleteOne({ email: email })
+      .then((result) => {
+        if (result.deletedCount === 0) {
+          // No review was found with the given email
+          return res.status(404).json({
+            message: "No review found with the given email",
+          });
+        }
+  
+        // Review deleted successfully
         res.json({
-            message : "review deleted successfully"
+          message: "Review deleted successfully",
         });
-    }).catch((error)=>{
-        res.error(404).json({
-            message : "reviewdeletion failed"
+      })
+      .catch((error) => {
+        console.error("Error deleting review:", error);
+        res.status(500).json({
+          message: "Failed to delete review",
+          error,
         });
-    });
-}
+      });
+  }
+  
 
 // "email": "user@domain.com",
 //     "password": "password123", customer
