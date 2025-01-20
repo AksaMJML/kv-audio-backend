@@ -35,13 +35,19 @@ export function getReviews(req,res){
     if(user == null || user.role != "admin"){
         Review.find({isApproved : true }).then((reviews)=>{
             res.json(reviews);
-        });
+        })
+        .catch((error) => res.status(500).json({ message: "Failed to fetch reviews", error }));
     return;
     }
-    if(user.role == "admin"){
-        Review.find().then((reviews)=>{
+    if (user.role === "admin") {
+        Review.find()
+          .then((reviews) => {
             res.json(reviews);
-        });
+          })
+          .catch((error) => {
+            console.error("Error fetching all reviews:", error);
+            res.status(500).json({ message: "Failed to fetch all reviews." });
+          });
     }
 }
 
@@ -95,39 +101,80 @@ export function deleteReview(req,res){
         }
     }
 
-    export function approveReview(req,res){
+    export function approveReview(req, res) {
         const email = req.params.email;
-    
-        if(req.user == null){
-            res.status(401).json({
-                message : "please login and try again"
-            });
-            return;
+      
+        if (!req.user) {
+          return res.status(401).json({
+            message: "Please login and try again.",
+          });
         }
-    
-        if(req.user.role == "admin"){
-            Review.updateOne(
-                {
-                    email : email
-                },
-                {
-                    isApproved : true
-                }
-            ).then(()=>{
-                res.json({
-                    message : "Review Updated Successfully"
+      
+        if (req.user.role === "admin") {
+          Review.updateOne(
+            { email: email }, // Filter condition to find the review
+            { $set: { isApproved: true } } // Use $set to update the field
+          )
+            .then((result) => {
+              // Check if a review was actually updated
+              if (result.modifiedCount === 0) {
+                return res.status(404).json({
+                  message: "No review found with the provided email.",
                 });
-            }).catch(()=>{
-                    res.json({
-                        message : "Review Approval Failed"
-                    });
-                });
-        }else{
-            res.status(404).json({
-                message : "You Are Not Admin. Only Admin Can Approve The Reviews"
+              }
+              res.json({
+                message: "Review updated successfully.",
+              });
+            })
+            .catch((error) => {
+              console.error("Error approving review:", error);
+              res.status(500).json({
+                message: "Review approval failed.",
+                error: error.message,
+              });
             });
+        } else {
+          res.status(403).json({
+            message: "You are not authorized. Only admins can approve reviews.",
+          });
         }
-}
+      }
+      
+
+//     export function approveReview(req,res){
+//         const email = req.params.email;
+    
+//         if(req.user == null){
+//             res.status(401).json({
+//                 message : "please login and try again"
+//             });
+//             return;
+//         }
+    
+//         if(req.user.role == "admin"){
+//             Review.updateOne(
+//                 {
+//                     email : email
+//                 },
+//                 {
+//                     isApproved : true
+//                 }
+//             ).then(()=>{
+//                 res.json({
+//                     message : "Review Updated Successfully"
+//                 });
+//             }).catch(()=>{
+//                     res.json({
+//                         message : "Review Approval Failed"
+//                     });
+//                 });
+//         }else{
+//             res.status(404).json({
+//                 message : "You Are Not Admin. Only Admin Can Approve The Reviews"
+//             });
+//         }
+// }
+
 
 //     Review.deleteOne({ email: email })
 //       .then((result) => {
