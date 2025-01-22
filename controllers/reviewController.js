@@ -102,45 +102,46 @@ export function deleteReview(req,res){
     }
 
     export function approveReview(req, res) {
-        const email = req.params.email;
-      
-        if (!req.user) {
-          return res.status(401).json({
-            message: "Please login and try again.",
-          });
-        }
-      
-        if (req.user.role === "admin") {
-          Review.updateOne(
-            { email: email }, // Filter condition to find the review
-            { $set: { isApproved: true } } // Use $set to update the field
-          )
-            .then((result) => {
-              // Check if a review was actually updated
-              if (result.modifiedCount === 0) {
-                return res.status(404).json({
-                  message: "No review found with the provided email.",
-                });
-              }
-              res.json({
-                message: "Review updated successfully.",
-              });
-            })
-            .catch((error) => {
-              console.error("Error approving review:", error);
-              res.status(500).json({
-                message: "Review approval failed.",
-                error: error.message,
-              });
-            });
-        } else {
-          res.status(403).json({
-            message: "You are not authorized. Only admins can approve reviews.",
-          });
-        }
+      const email = req.params.email;
+    
+      if (!req.user) {
+        return res.status(401).json({ message: "Please login and try again" });
       }
-      
+    
+      if (req.user.role === "admin") {
+        Review.updateOne(
+          { email: email }, // Find document by email
+          { isApproved: true } // Update isApproved field
+        )
+          .then((result) => {
+            if (result.matchedCount === 0) {
+              return res.status(404).json({
+                message: "No review found with the provided email.",
+              });
+            }
+    
+            if (result.modifiedCount === 0) {
+              return res.status(400).json({
+                message: "Review was not updated. It might already be approved.",
+              });
+            }
+    
+            res.json({ message: "Review approved successfully" });
+          })
+          .catch((error) => {
+            console.error("Error approving review:", error);
+            res.status(500).json({ message: "Review approval failed" });
+          });
+      } else {
+        res
+          .status(403)
+          .json({ message: "Only admins can approve the reviews." });
+      }
+    }
+    
 
+      
+//approve review we coded in class
 //     export function approveReview(req,res){
 //         const email = req.params.email;
     
