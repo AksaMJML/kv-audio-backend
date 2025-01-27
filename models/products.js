@@ -28,10 +28,12 @@ const productSchema = new mongoose.Schema(
             type : String,
             required : true
         }
-        // ,
-        // availability : {
-            
-        // }
+        ,
+         isAvailable : {
+            type : Boolean,
+            required : true,
+            default : false
+        }
     }
 );
 
