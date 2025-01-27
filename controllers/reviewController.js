@@ -32,8 +32,21 @@ export async function getReviews(req,res){
 
     const user = req.user;
 
-      const reviews = await Review.find();
-      res.json(reviews);
+      try{
+        if(user.role == "admin"){
+          const reviews = await Review.find(reviews);
+          res.json(reviews);
+        }else{
+          const reviews = await Review.find({isApproved : true});
+          res.json(reviews);
+        }
+      }catch(error){
+        console.error("Error fetching all reviews:", error);
+        res.status(500).json({ message: "Failed to fetch all reviews." });
+      }
+      
+      // const reviews = await Review.find();
+      // res.json(reviews);
       
     // if(user == null || user.role != "admin"){
     //     Review.find({isApproved : true }).then((reviews)=>{
