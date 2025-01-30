@@ -15,10 +15,11 @@ const productSchema = new mongoose.Schema(
             type : Number,
             required : true
         },
-        // image : {
-        //     type : String,
-
-        // },
+        image : {
+            type : [String],
+            required : true,
+            default : ["https://via.placeholder.com/300?text=No+Image+Available"]
+        },
         category : {
             type : String,
             require : true,

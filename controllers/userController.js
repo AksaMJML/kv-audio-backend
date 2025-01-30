@@ -120,4 +120,23 @@ export function loginUser(req,res){
 //   });
 // }
 
+// export function isItAdmin(req){
+//     let isAdmin = false;
+    
+//     if(req.user == null){
+//         if(req.user.role == "admin"){
+//             isAdmin = true;
+//         }
+//     }
+//     return isAdmin;
+// }
 
+export function isItAdmin(req) {
+    // Check if req.user exists
+    if (!req.user) {
+        return false; // No user, not an admin
+    }
+
+    // Check if the user's role is "admin"
+    return req.user.role === "admin";
+}
