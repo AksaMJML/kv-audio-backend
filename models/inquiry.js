@@ -30,7 +30,7 @@ const inquirySchema = new mongoose.Schema({
         default : ""
     },
     isResolved : {
-        type : String,
+        type : Boolean,
         required : true,
         default : false
     }
