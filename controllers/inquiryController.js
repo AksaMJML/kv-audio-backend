@@ -1,5 +1,4 @@
 import Inquiry from "../models/inquiry.js";
-import Review from "../models/review.js";
 
 export async function  addInquiry(req,res) {
     if(req.user == null){
