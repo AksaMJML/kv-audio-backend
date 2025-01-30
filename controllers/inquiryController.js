@@ -1,0 +1,1 @@
+import Inquiry from "../models/inquiry.js";
