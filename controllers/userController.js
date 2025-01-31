@@ -140,3 +140,13 @@ export function isItAdmin(req) {
     // Check if the user's role is "admin"
     return req.user.role === "admin";
 }
+
+export function isItCustomer(req) {
+    // Check if req.user exists
+    if (!req.user) {
+        return false; // No user, not a customer
+    }
+
+    // Check if the user's role is "customer"
+    return req.user.role === "customer";
+}
