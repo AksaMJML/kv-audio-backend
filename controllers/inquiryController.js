@@ -1,6 +1,6 @@
 import { response } from "express";
 import Inquiry from "../models/inquiry.js";
-import { isItCustomer } from "./userController.js";
+import { isItAdmin, isItCustomer } from "./userController.js";
 
 export async function  addInquiry(req,res) {
     if(req.user == null){
@@ -41,11 +41,23 @@ export async function  addInquiry(req,res) {
 }
 
 export async function getInquiry(req,res){
-    if(req.user == null){
-        res.status(401).json({
-            message : "please login to the system and try again"
-        })
-        return;
+    try{
+        if(isItCustomer(req)){
+            const inquiries = await inquiries.find({email:req.user.email});
+            res.json(inquiries);
+            return;
+        }else if(isItAdmin(req)){
+            const inquiries = await inquiries.find(inquiries);
+            res.json(inquiries);
+            return;
+        }else{
+            res.status(403).json({
+                message : "You are not authorized to perform this action"
+            })
+            return;
+        }
+    }catch(error){
+        console.error("Error view inquiry:", error);
+        res.status(500).json({ message: "Inquiry getting failed", error: error.message });
     }
-    
 }
