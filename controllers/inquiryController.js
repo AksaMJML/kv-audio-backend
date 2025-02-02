@@ -43,11 +43,11 @@ export async function  addInquiry(req,res) {
 export async function getInquiry(req,res){
     try{
         if(isItCustomer(req)){
-            const inquiries = await inquiries.find({email:req.user.email});
+            const inquiries = await Inquiry.find({email:req.user.email});
             res.json(inquiries);
             return;
         }else if(isItAdmin(req)){
-            const inquiries = await inquiries.find(inquiries);
+            const inquiries = await Inquiry .find();
             res.json(inquiries);
             return;
         }else{
