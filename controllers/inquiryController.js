@@ -64,35 +64,69 @@ export async function getInquiry(req,res){
 
 export async function deleteInquiry(req,res){
     try{
-        if(isItAdmin(req)){
+        
+        // if(isItAdmin(req)){
+            
+        //     const inquiry = await Inquiry.findOne({ key: key });
+        //     if (!inquiry) {
+        //         res.status(404).json({ message: "Inquiry Not Found" });
+        //         return;
+        //     }
+        //     res.json({
+        //         message : "Inquiry deleted successfully"
+        //     })
+        //     return;
+        if (isItAdmin(req)) {
             const key = req.params.key;
-            await Inquiry.deleteOne({key:key})
-            res.json({
-                message : "Inquiry deleted successfully"
-            })
-            return;
-        }else if(isItCustomer(req)){
-            const key = req.params.key;
-
-            const inquiry = await Inquiry.findOne({key:key})
-            if(inquiry == null){
-                res.status(404).json({
-                    message : "Inquiry Not Found"
-                })
+            const inquiry = await Inquiry.findOne({ key: key });
+        
+            if (!inquiry) {
+                res.status(404).json({ message: "Inquiry Not Found" });
                 return;
-            }else{
-                if(inquiry.email == req.user.email){
-                    await Inquiry.deleteOne({key:key})
-                    res.json({
-                        message : "Inquiry deleted successfully"
-                    })
+            }
+        
+            // Perform delete operation
+            const deleteResult = await Inquiry.deleteOne({ key: key });
+            console.log("Delete result:", deleteResult);
+        
+            if (deleteResult.deletedCount === 0) {
+                res.status(500).json({ message: "Failed to delete inquiry" });
+                return;
+            }
+        
+            res.json({ message: "Inquiry deleted successfully" });
+            return;
+        }else if (isItCustomer(req)) {
+            // Customer can only delete their own inquiry
+            const key = req.params.key;
+            const inquiry = await Inquiry.findOne({ key: key });
+
+            if (!inquiry) {
+                res.status(404).json({ message: "Inquiry Not Found" });
+                return;
+            } 
+            else {
+                if (!req.user || !req.user.email) {
+                    console.log("User object missing or incomplete");
+                    res.status(403).json({ message: "Invalid user authentication" });
+                    return;
+                }
+
+                if (inquiry.email === req.user.email) {
+                    await Inquiry.deleteOne({ key: key });
+                    res.json({ message: "Inquiry deleted successfully" });
+                    return;
+                } 
+                else {
+                    console.log("Unauthorized user trying to delete someone else's inquiry");
+                    res.status(403).json({ message: "You are not authorized to delete this inquiry" });
                     return;
                 }
             }
-        }else{
-            res.status(403).json({
-                message : "You are not authorized to perform this action"
-            })
+        } 
+        else {
+            console.log("Unauthorized access detected");
+            res.status(403).json({ message: "You are not authorized to perform this action" });
             return;
         }
     }catch(error){
