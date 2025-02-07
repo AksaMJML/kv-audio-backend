@@ -61,3 +61,42 @@ export async function getInquiry(req,res){
         res.status(500).json({ message: "Inquiry getting failed", error: error.message });
     }
 }
+
+export async function deleteInquiry(req,res){
+    try{
+        if(isItAdmin(req)){
+            const key = req.params.key;
+            await Inquiry.deleteOne({key:key})
+            res.json({
+                message : "Inquiry deleted successfully"
+            })
+            return;
+        }else if(isItCustomer(req)){
+            const key = req.params.key;
+
+            const inquiry = await Inquiry.findOne({key:key})
+            if(inquiry == null){
+                res.status(404).json({
+                    message : "Inquiry Not Found"
+                })
+                return;
+            }else{
+                if(inquiry.email == req.user.email){
+                    await Inquiry.deleteOne({key:key})
+                    res.json({
+                        message : "Inquiry deleted successfully"
+                    })
+                    return;
+                }
+            }
+        }else{
+            res.status(403).json({
+                message : "You are not authorized to perform this action"
+            })
+            return;
+        }
+    }catch(error){
+        console.error("Error delete inquiry:", error);
+        res.status(500).json({ message: "Inquiry deleting failed", error: error.message });
+    }
+}
