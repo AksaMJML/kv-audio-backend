@@ -134,3 +134,103 @@ export async function deleteInquiry(req,res){
         res.status(500).json({ message: "Inquiry deleting failed", error: error.message });
     }
 }
+
+// export async function updateInquiry(req,res) {
+//     try{
+//         if(isItAdmin(req)){
+//             const key = req.params.key;
+//             const data = req.body;
+
+//             await Inquiry.updateOne({key:key},data);
+//             res.json({
+//                 message : "Inquiry updated successfully"
+//             })
+//             return;
+//         }else if (isItCustomer(req)) {
+//             // Customer can only delete their own inquiry
+//             const key = req.params.key;
+//             const inquiry = await Inquiry.findOne({ key: key });
+
+//             if (!inquiry) {
+//                 res.status(404).json({ message: "Inquiry Not Found" });
+//                 return;
+//             } 
+//             else {
+//                 if (!req.user || !req.user.email) {
+//                     console.log("User object missing or incomplete");
+//                     res.status(403).json({ message: "Invalid user authentication" });
+//                     return;
+//                 }
+
+//                 if (inquiry.email === req.user.email) {
+//                     await Inquiry.updateOne({ key: key },{message : data.message});
+//                     res.json({ message: "Inquiry updated successfully" });
+//                     return;
+//                 } 
+//                 else {
+//                     console.log("Unauthorized user trying to update someone else's inquiry");
+//                     res.status(403).json({ message: "You are not authorized to update this inquiry" });
+//                     return;
+//                 }
+//             }
+//         } 
+//         else {
+//             console.log("Unauthorized access detected");
+//             res.status(403).json({ message: "You are not authorized to perform this action" });
+//             return;
+//         }
+//     }catch(error){
+//         res.status(500).json({
+//             message : "Inquiry updating failed", error: error.message
+//         })
+//     }
+// }
+export async function updateInquiry(req, res) {
+    try {
+        const key = req.params.key;
+        const data = req.body;
+
+        if (!key) {
+            return res.status(400).json({ message: "Inquiry key is required" });
+        }
+
+        if (!data || Object.keys(data).length === 0) {
+            return res.status(400).json({ message: "Update data is required" });
+        }
+
+        const inquiry = await Inquiry.findOne({ key: key });
+
+        if (!inquiry) {
+            return res.status(404).json({ message: "Inquiry not found" });
+        }
+
+        if (isItAdmin(req)) {
+            // Admins can update any field
+            await Inquiry.updateOne({ key: key }, data);
+            return res.json({ message: "Inquiry updated successfully" });
+        }
+
+        if (isItCustomer(req)) {
+            // Customers can only update their own inquiries
+            if (!req.user || !req.user.email) {
+                console.log("User object missing or incomplete");
+                return res.status(403).json({ message: "Invalid user authentication" });
+            }
+
+            if (inquiry.email === req.user.email) {
+                await Inquiry.updateOne({ key: key }, { message: data.message });
+                return res.json({ message: "Inquiry updated successfully" });
+            } else {
+                console.log("Unauthorized user attempting to update another user's inquiry");
+                return res.status(403).json({ message: "You are not authorized to update this inquiry" });
+            }
+        }
+
+        console.log("Unauthorized access detected");
+        return res.status(403).json({ message: "You are not authorized to perform this action" });
+
+    } catch (error) {
+        console.error("Error updating inquiry:", error);
+        return res.status(500).json({ message: "Inquiry update failed", error: error.message });
+    }
+}
